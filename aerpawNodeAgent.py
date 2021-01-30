@@ -14,18 +14,28 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
         # Whenever using 'send_header', you also have to call 'end_headers'
         self.end_headers()
 
-        pathStr = self.path
-        pathLen = len(pathStr)
+        print("Handling: " + self.path)
+        pathPiecesList = self.path.split("/")
+        containerStr = pathPiecesList[3]
+        print("zeroeth element =" + pathPiecesList[0])
 
 
-        if pathStr.startswith("/v1/fetchContainer/") :
+        if self.path.startswith("/v1/fetchContainer/") :
             # service fetchContainer
             returnedStr = "OK"
-            print("Doing a fetchContainer")
-        elif pathStr.startswith("/v1/startContainer") :
-            # service startContainer
+            print("Doing a fetchContainer of " + containerStr)
+
+        elif self.path.startswith("/v1/startContainerWithMount/") :
+            # service startContainerWithMount
+            datacontainerStr = pathPiecesList[4]
             returnedStr = "OK"
-            print ("Doing a startContainer")
+            print ("Doing a startContainer of " + containerStr + " with " + datacontainerStr)
+
+        elif self.path.startswith("/v1/startContainer/") :
+            # service startContainerWithMount
+            returnedStr = "OK"
+            print ("Doing a startContainer of " + containerStr + " with no datacontainer" )
+
         else :
             returnedStr = "UNKNOWN"
 
