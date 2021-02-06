@@ -2,6 +2,11 @@ import http.server
 import socketserver
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
+import subprocess
+
+def runCmd(cmd):
+    shelledResults = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    return shelledResults.returncode
 
 class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -24,23 +29,36 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
             # service fetchContainer
             returnedStr = "OK"
             print("Doing a fetchContainer of " + containerStr)
-
-        elif self.path.startswith("/v1/startContainerWithMount/") :
-            # service startContainerWithMount
-            datacontainerStr = pathPiecesList[4]
-            returnedStr = "OK"
-            print ("Doing a startContainer of " + containerStr + " with " + datacontainerStr)
+            command = "fetchContainer " + containerStr
+            runCmd(command)
 
         elif self.path.startswith("/v1/startContainer/") :
             # service startContainerWithMount
             returnedStr = "OK"
-            print ("Doing a startContainer of " + containerStr + " with no datacontainer" )
+            print ("Doing a startContainer of " + containerStr )
+            command = "startContainer " + containerStr
+            runCmd(command)
 
+        elif self.path.startswith("/v1/emitDataVolume/") :
+            # service startContainerWithMount
+            returnedStr = "OK"
+            print ("Doing an emitDataVolume of " + containerStr )
+
+        elif self.path.startswith("/v1/deleteDataVolume/") :
+            # service startContainerWithMount
+            returnedStr = "OK"
+            print ("Doing a deleteDataVolume of " + containerStr )
+
+        elif self.path.startswith("/v1/killContainer/") :
+            # service startContainerWithMount
+            returnedStr = "OK"
+            print ("Doing a killContainer of " + containerStr )
+            
         else :
             returnedStr = "UNKNOWN"
 
 
-        # Writing the resulting contents with UTF-8
+            # Writing the resulting contents with UTF-8
         self.wfile.write(bytes(returnedStr, "utf8")) # FIXME - probably shouldn't be UTF-8?
 
         return
