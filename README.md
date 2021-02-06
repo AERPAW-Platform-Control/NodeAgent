@@ -1,5 +1,8 @@
-# ProvisioningControl
-The client (NUC or Fixed Node) side of setting up an AERPAW experiment
+# aerpawNodeAgent
+The client (NUC or Fixed Node) side of setting up an AERPAW experiment. Runs after the machine
+is re-imaged via PXE and controls downloading, running, and saving results from
+experiments. Also capable, under limited circumstances, of going out and getting barbeque
+sandwiches for the team.
 
 
 ## Basic Idea
