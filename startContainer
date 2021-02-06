@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [[ "$#" -lt 1 ]]; then
+    echo "usage: fetchContainer containernametofetch" > /dev/stderr
+    exit 1
+fi
+
+if [ ! -d "/var/local" ]; then
+    mkdir /var/local
+fi
+
+if [ ! -d /var/local"$1" ]; then
+    mkdir /var/local/"$1"
+fi
+
+
