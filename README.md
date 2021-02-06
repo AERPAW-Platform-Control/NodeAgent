@@ -2,7 +2,7 @@
 The client (NUC or Fixed Node) side of setting up an AERPAW experiment
 
 
-##Basic Idea
+## Basic Idea
 
 A minimal web server (aerpawNodeControl.py) listens for HTTP GET requests
 on port 1887 (the year NCSU was founded, naturally). Basic workflow is
