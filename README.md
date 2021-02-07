@@ -35,9 +35,7 @@ otherwise.
 ```/v1/fetchContainer/ContainerNameGoesHere``` - loads a snapshot of the desired container into the local docker
 
 ```/v1/startContainer/ContainerNameGoesHere``` - starts the specified container running (docker run). Caution: if your container starts your experiment in the background (such as
-```
-ENTRYPOINT["myExperiment.sh &"]
-```
+```ENTRYPOINT["myExperiment.sh &"]```
 (notice the ampersand?) then the container will exit immediately and it will be hard to know
 when your experiment has completed. It's a good idea to not do that.
 
