@@ -10,7 +10,7 @@ if [ ! -d /var/local"$1" ]; then
 fi
 
 
-CONTAINER = "$1"
+CONTAINER="$1"
 
 docker run -it --privileged -v /dev/bus/usb:/dev/bus/usb -v /var/local/"$CONTAINER":/data "$CONTAINER" 2> /var/local/"$CONTAINER"-stderr > /var/local/"$CONTAINER"-stdout &
 
