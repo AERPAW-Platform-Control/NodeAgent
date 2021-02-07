@@ -19,9 +19,9 @@ begin executing. An area of disk storage will be provided to the running contain
 mounted as "/data". As a good rule of thumb, don't write more than a few hundred gigabytes
 here without checking with the operations people first.
 
-3. When the "docker run" command terminates, either because the ENTRYPOINT program completed
-or because there was some grave error, the "emitDataVolume" command can be used to
-copy that filesystem directory back (as a tar file)
+3. Whether the container has finished running or not,
+the "emitDataVolume" command can be used to
+copy that container's private data filesystem directory back (as a tar file)
 
 4. Finally, even if the container has ceased running, call the "killContainer" command
 to shut down (if needed) and delete the container. A "docker prune" will be done to clean up
@@ -34,7 +34,12 @@ otherwise.
 
 ```/v1/fetchContainer/ContainerNameGoesHere``` - loads a snapshot of the desired container into the local docker
 
-```/v1/startContainer/ContainerNameGoesHere``` - starts the specified container running (docker run)
+```/v1/startContainer/ContainerNameGoesHere``` - starts the specified container running (docker run). Caution: if your container starts your experiment in the background (such as
+```
+ENTRYPOINT["myExperiment.sh &"]
+```
+(notice the ampersand?) then the container will exit immediately and it will be hard to know
+when your experiment has completed. It's a good idea to not do that.
 
 ```/v1/emitDataVolume/ContainerNameGoesHere``` - returns the contents of the directory that was mounted to the running container as /data. The contents of the resulting tar file is returned
 as the HTTP payload (right after the header and the mandatory blank line, naturally).
