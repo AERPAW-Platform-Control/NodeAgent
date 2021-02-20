@@ -32,11 +32,23 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
             command = "fetchContainer " + containerStr
             runCmd(command)
 
+        elif self.path.startswith("/v1/fetchVM/") :
+            returned=bytes("OK","utf-8")
+            print ("Doing a fetchVM of " + containerStr )
+            command = "fetchVM " + containerStr
+            runCmd(command)
+            
         elif self.path.startswith("/v1/startContainer/") :
             returned=bytes("OK","utf-8")
             print ("Doing a startContainer of " + containerStr )
             command = "startContainer " + containerStr
             runCmd(command)
+
+        elif self.path.startswith("/v1/startVM/") :
+            returned=bytes("OK","utf-8")
+            print ("Doing a startVM of " + containerStr )
+            command = "startVM " + containerStr
+            runCmd(command)            
 
         elif self.path.startswith("/v1/emitDataVolume/") :
             print ("Doing an emitDataVolume of " + containerStr )
