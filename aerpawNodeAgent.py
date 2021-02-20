@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import http.server
 import socketserver
 from urllib.parse import urlparse
@@ -6,7 +8,9 @@ import subprocess
 import os
 
 def runCmd(cmd):
-    shelledResults = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    #shelledResults = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    shelledResults = subprocess.run(cmd, shell=True)
+    #print ("stdout = " + shelledResults.stdout)
     return shelledResults.returncode
 
 class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
@@ -28,12 +32,14 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
         respond=True
         if self.path.startswith("/v1/fetchContainer/") :
             returned=bytes("OK","utf-8")
+            respond=True
             print("Doing a fetchContainer of " + containerStr)
-            command = "fetchContainer " + containerStr
+            command = "./fetchContainer " + containerStr
             runCmd(command)
 
         elif self.path.startswith("/v1/startContainer/") :
             returned=bytes("OK","utf-8")
+            respond=True
             print ("Doing a startContainer of " + containerStr )
             command = "startContainer " + containerStr
             runCmd(command)
@@ -47,35 +53,46 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
             runCmd(tarCommand)
             # OK, TODO: This is just a quick hack to show tomorrow, need to
             # make this loop and not allocate 20+G of RAM, potentially.
-            with open("/var/local/" + containerStr + ".tar", 'r') as file:
+            with open("/var/local/" + containerStr + ".tar", 'rb') as file:
                 tarFileContents=file.read(-1)
             self.wfile.write(tarFileContents)
 
         elif self.path.startswith("/v1/deleteDataVolume/") :
             returned=bytes("OK","utf-8")
+            respond=True
             print ("Doing a deleteDataVolume of " + containerStr )
             os.remove("/var/local/" + containerStr + ".tar")
 
         elif self.path.startswith("/v1/killContainer/") :
             returned=bytes("OK","utf-8")
+            respond=True
             print ("Doing a killContainer of " + containerStr )
             killCmd="docker kill " + containerStr
             runCmd(killCmd)
             
         else :
             returned=bytes("Unknown REST entrypoint","utf-8")
+            respond=True
 
 
             # Writing the resulting contents with UTF-8
-        self.wfile.write(returned)
+        if respond == True:
+            self.wfile.write(returned)
 
         return
 
+
+class MyServer(socketserver.TCPServer):
+    allow_reuse_address=True
+
+    
 # Create an object of the above class
 handler_object = MyHttpRequestHandler
 
+runCmd("ls")
 PORT = 1887
-my_server = socketserver.TCPServer(("", PORT), handler_object)
+#my_server = socketserver.TCPServer(("", PORT), handler_object)
+my_server = MyServer(("",PORT), handler_object)
 
 # Star the server
 my_server.serve_forever()
