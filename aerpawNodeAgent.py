@@ -73,7 +73,7 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
             returned=bytes("OK","utf-8")
             respond=True
             print ("Doing a deleteDataVolume of " + containerStr )
-            tarCommand = "rm -rf /var/local/outputs/" + containerStr + " /var/local/outputs/" + containerStr + "-stdout /var/local/outputs/" + containerStr + "-stderr"
+            rmCommand = "rm -rf /var/local/outputs/" + containerStr + " /var/local/outputs/" + containerStr + "-stdout /var/local/outputs/" + containerStr + "-stderr"
             runCmd(rmCommand)
 
 
