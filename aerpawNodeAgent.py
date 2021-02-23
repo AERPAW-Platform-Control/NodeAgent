@@ -73,7 +73,9 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
             returned=bytes("OK","utf-8")
             respond=True
             print ("Doing a deleteDataVolume of " + containerStr )
-            os.remove("/var/local/outputs/" + containerStr + ".tar")
+            tarCommand = "rm -rf /var/local/outputs/" + containerStr + " /var/local/outputs/" + containerStr + "-stdout /var/local/outputs/" + containerStr + "-stderr"
+            runCmd(rmCommand)
+
 
         elif self.path.startswith("/v1/killContainer/") :
             returned=bytes("OK","utf-8")
