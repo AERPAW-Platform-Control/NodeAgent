@@ -13,6 +13,6 @@ fi
 
 CONTAINER="$1"
 
-docker run  --privileged -v /dev/bus/usb:/dev/bus/usb -v /var/local/"$CONTAINER":/data "$CONTAINER" 2> /var/local/"$CONTAINER"-stderr > /var/local/"$CONTAINER"-stdout
+docker run  --privileged -v /dev/bus/usb:/dev/bus/usb -v /var/local/outputs/"$CONTAINER":/data "$CONTAINER" 2> /var/local/outputs/"$CONTAINER"-stderr > /var/local/outputs/"$CONTAINER"-stdout < /dev/tty
 
 
