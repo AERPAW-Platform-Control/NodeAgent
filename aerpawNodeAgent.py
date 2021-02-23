@@ -61,7 +61,7 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
             # 1: tar the directory
             # 2: loop, reading a megabyte, writing a MB.
             respond=False  # we're doing the response in here, no need to at the bottom.
-            tarCommand = "tar cf /var/local/outputs/" + containerStr + ".tar /var/local/outputs/" + containerStr
+            tarCommand = "tar cf /var/local/outputs/" + containerStr + ".tar /var/local/outputs/" + containerStr + " /var/local/outputs/" + containerStr + "-stdout /var/local/outputs/" + containerStr + "-stderr"
             runCmd(tarCommand)
             # OK, TODO: This is just a quick hack to show tomorrow, need to
             # make this loop and not allocate 20+G of RAM, potentially.
