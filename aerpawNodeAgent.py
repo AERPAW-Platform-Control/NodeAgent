@@ -65,7 +65,7 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
             runCmd(tarCommand)
             # OK, TODO: This is just a quick hack to show tomorrow, need to
             # make this loop and not allocate 20+G of RAM, potentially.
-            with open("/var/local/outputs" + containerStr + ".tar", 'rb') as file:
+            with open("/var/local/outputs/" + containerStr + ".tar", 'rb') as file:
                 tarFileContents=file.read(-1)
             self.wfile.write(tarFileContents)
 
