@@ -61,7 +61,7 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
             # 1: tar the directory
             # 2: loop, reading a megabyte, writing a MB.
             respond=False  # we're doing the response in here, no need to at the bottom.
-            tarCommand = "tar cf /var/local/" + containerStr + ".tar /var/local/" + containerStr
+            tarCommand = "tar cf /var/local/outputs/" + containerStr + ".tar /var/local/outputs/" + containerStr
             runCmd(tarCommand)
             # OK, TODO: This is just a quick hack to show tomorrow, need to
             # make this loop and not allocate 20+G of RAM, potentially.
@@ -73,7 +73,7 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
             returned=bytes("OK","utf-8")
             respond=True
             print ("Doing a deleteDataVolume of " + containerStr )
-            os.remove("/var/local/" + containerStr + ".tar")
+            os.remove("/var/local/outputs/" + containerStr + ".tar")
 
         elif self.path.startswith("/v1/killContainer/") :
             returned=bytes("OK","utf-8")
