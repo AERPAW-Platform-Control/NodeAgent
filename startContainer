@@ -2,17 +2,16 @@
 set -x
 
 if [[ "$#" -lt 1 ]]; then
-    echo "usage: startContainer containernametofetch" > /dev/stderr
+    echo "usage: startContainer containernametorun" > /dev/stderr
     exit 1
 fi
 
-if [ ! -d /var/local"$1" ]; then
-    mkdir -p /var/local/"$1"
-fi
-
-
 CONTAINER="$1"
 
-docker run  --privileged -v /dev/bus/usb:/dev/bus/usb -v /var/local/outputs/"$CONTAINER":/data "$CONTAINER" 2> /var/local/outputs/"$CONTAINER"-stderr > /var/local/outputs/"$CONTAINER"-stdout < /dev/tty
+if [ ! -d /var/local/aerpawNodeAgent/"$CONTAINER"/data ]; then
+    mkdir -p /var/local/aerpawNodeAgent/"$CONTAINER"/data
+fi
+
+docker run  --privileged -v /dev/bus/usb:/dev/bus/usb -v /var/local/aerpawNodeAgent/"$CONTAINER"/data:/data "$CONTAINER" 2> /var/local/aerpawNodeAgent/"$CONTAINER"/stderr > /var/local/aerpawNodeAgent/"$CONTAINER"/stdout < /dev/tty
 
 

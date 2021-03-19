@@ -5,10 +5,15 @@ whoami
 who am i
 id
 
-if [[ "$#" -lt 1 ]]; then
-    echo "usage: fetchContainer containernametofetch" > /dev/stderr
+if [[ "$#" -lt 2 ]]; then
+    echo "usage: fetchContainer containerStorageURL containernametofetch" > /dev/stderr
     exit 1
 fi
 
+echo one: $1
+echo two: $2
+
 #echo http://people.renci.org/~escott/${1}.docker.tar
-wget http://people.renci.org/~escott/${1}.docker.tar -O - | docker load 
+#wget http://people.renci.org/~escott/${1}.docker.tar -O - | docker load 
+wget ${1}/${2}.docker.tar -O - | docker load 
+

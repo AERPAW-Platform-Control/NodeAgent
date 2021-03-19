@@ -6,11 +6,10 @@ from urllib.parse import urlparse
 from urllib.parse import parse_qs
 import subprocess
 import os
+import json
 
 def runCmd(cmd):
-    #shelledResults = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     shelledResults = subprocess.run(cmd, shell=True)
-    #print ("stdout = " + shelledResults.stdout)
     return shelledResults.returncode
 
 class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
@@ -34,7 +33,8 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
             returned=bytes("OK","utf-8")
             respond=True
             print("Doing a fetchContainer of " + containerStr)
-            command = "./fetchContainer " + containerStr
+            command = "fetchContainer " + containerStore + " " + containerStr
+            print (command)
             runCmd(command)
 
         elif self.path.startswith("/v1/fetchVM/") :
@@ -61,11 +61,13 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
             # 1: tar the directory
             # 2: loop, reading a megabyte, writing a MB.
             respond=False  # we're doing the response in here, no need to at the bottom.
-            tarCommand = "tar cf /var/local/outputs/" + containerStr + ".tar /var/local/outputs/" + containerStr + " /var/local/outputs/" + containerStr + "-stdout /var/local/outputs/" + containerStr + "-stderr"
+#            tarCommand = "tar cf /var/local/aerpawNodeAgent/" + containerStr + ".tar /var/local/aerpawNodeAgent/" + containerStr + " /var/local/aerpawNodeAgent/" + containerStr + "/stdout /var/local/aerpawNodeAgent/" + containerStr + "/stderr"
+            tarCommand = "cd /var/local/aerpawNodeAgent ; tar cf /var/local/aerpawNodeAgent/outbound/" + containerStr + ".tar " + containerStr 
+            print(tarCommand)
             runCmd(tarCommand)
             # OK, TODO: This is just a quick hack to show tomorrow, need to
             # make this loop and not allocate 20+G of RAM, potentially.
-            with open("/var/local/outputs/" + containerStr + ".tar", 'rb') as file:
+            with open("/var/local/aerpawNodeAgent/outbound/" + containerStr + ".tar", 'rb') as file:
                 tarFileContents=file.read(-1)
             self.wfile.write(tarFileContents)
 
@@ -89,7 +91,7 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
             respond=True
 
 
-            # Writing the resulting contents with UTF-8
+        # Writing the resulting contents with UTF-8
         if respond == True:
             self.wfile.write(returned)
 
@@ -100,14 +102,18 @@ class MyServer(socketserver.TCPServer):
     allow_reuse_address=True
 
     
-# Create an object of the above class
+# MAIN
+with open("/etc/aerpawNodeAgent.json") as f:
+    options = json.load(f)
+
 handler_object = MyHttpRequestHandler
 
-runCmd("ls")
-PORT = 1887
-#my_server = socketserver.TCPServer(("", PORT), handler_object)
-my_server = MyServer(("",PORT), handler_object)
+port =  int(options["port"])
+print(port)
+containerStore = str( options["containerStore"])
 
-# Star the server
+my_server = MyServer(("",port), handler_object)
+
+# Release the Kracken!!!
 my_server.serve_forever()
 
