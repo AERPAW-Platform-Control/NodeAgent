@@ -1,4 +1,9 @@
 #!/bin/bash
+set -x
+
+whoami
+who am i
+id
 
 if [[ "$#" -lt 1 ]]; then
     echo "usage: fetchContainer containernametofetch" > /dev/stderr
