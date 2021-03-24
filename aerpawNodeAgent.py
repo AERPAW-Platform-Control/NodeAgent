@@ -42,6 +42,9 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
             print ("Doing a fetchVM of " + containerStr )
             command = "fetchVM " + containerStr
             runCmd(command)
+
+        elif self.path.startswith("/v1/ping/") :
+            returned=bytes("OK","utf-8")
             
         elif self.path.startswith("/v1/startContainer/") :
             returned=bytes("OK","utf-8")
