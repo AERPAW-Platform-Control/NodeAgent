@@ -1,19 +1,32 @@
 #!/bin/bash
-set -x
-
-whoami
-who am i
-id
 
 if [[ "$#" -lt 2 ]]; then
-    echo "usage: fetchContainer containerStorageURL containernametofetch" > /dev/stderr
+    echo "usage: fetchContainer containerStorageURL containernametofetch"
     exit 1
 fi
 
-echo one: $1
-echo two: $2
+wget ${1}/${2}.docker.tar -O - > /tmp/aerContainer$$
+retVal=$?
+if [ $retVal -ne 0 ]; then
+    echo "wget failed: " ${1} ${2}
+    exit $retVal
+fi
 
-#echo http://people.renci.org/~escott/${1}.docker.tar
-#wget http://people.renci.org/~escott/${1}.docker.tar -O - | docker load 
-wget ${1}/${2}.docker.tar -O - | docker load 
+
+docker load < /tmp/aerContainer$$
+retVal=$?
+if [ $retVal -ne 0 ]; then
+    echo "docker load failed: " ${1} ${2}
+    exit $retVal
+fi
+
+rm /tmp/aerContainer$$
+retVal=$?
+if [ $retVal -ne 0 ]; then
+    echo "rm failed: " ${1} ${2}
+    exit $retVal
+fi
+
+
+exit 0
 

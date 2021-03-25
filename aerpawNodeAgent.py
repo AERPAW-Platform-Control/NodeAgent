@@ -30,12 +30,15 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         respond=True
         if self.path.startswith("/v1/fetchContainer/") :
-            returned=bytes("OK","utf-8")
             respond=True
             print("Doing a fetchContainer of " + containerStr)
             command = "fetchContainer " + containerStore + " " + containerStr
             print (command)
-            runCmd(command)
+            retCode = runCmd(command)
+            if retCode == 0 :
+                returned=bytes("OK","utf-8")
+            else:
+                returned=bytes("failed "+str(retCode),"utf-8")
 
         elif self.path.startswith("/v1/fetchVM/") :
             returned=bytes("OK","utf-8")
@@ -64,12 +67,11 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
             # 1: tar the directory
             # 2: loop, reading a megabyte, writing a MB.
             respond=False  # we're doing the response in here, no need to at the bottom.
-#            tarCommand = "tar cf /var/local/aerpawNodeAgent/" + containerStr + ".tar /var/local/aerpawNodeAgent/" + containerStr + " /var/local/aerpawNodeAgent/" + containerStr + "/stdout /var/local/aerpawNodeAgent/" + containerStr + "/stderr"
-            tarCommand = "cd /var/local/aerpawNodeAgent ; tar cf /var/local/aerpawNodeAgent/outbound/" + containerStr + ".tar " + containerStr 
+            tarCommand = "cd /var/local/aerpawNodeAgent ; tar cf outbound/" + containerStr + ".tar " + containerStr 
             print(tarCommand)
             runCmd(tarCommand)
-            # OK, TODO: This is just a quick hack to show tomorrow, need to
-            # make this loop and not allocate 20+G of RAM, potentially.
+            # OK, TODO: Really need to make this handle large files by blocks,
+            # not by trying to do this all in one big spasming lurch.
             with open("/var/local/aerpawNodeAgent/outbound/" + containerStr + ".tar", 'rb') as file:
                 tarFileContents=file.read(-1)
             self.wfile.write(tarFileContents)
@@ -88,7 +90,14 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
             print ("Doing a killContainer of " + containerStr )
             killCmd="docker kill " + containerStr
             runCmd(killCmd)
-            
+
+        elif self.path.startswith("/v1/deleteContainer/") :
+            returned=bytes("OK","utf-8")
+            respond=True
+            print ("Doing a deleteContainer of " + containerStr )
+            killCmd="docker system prune -f ;docker image rm " + containerStr
+            runCmd(killCmd)
+
         else :
             returned=bytes("Unknown REST entrypoint","utf-8")
             respond=True
