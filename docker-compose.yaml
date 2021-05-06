@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  node-agent:
+    env_file:
+      - .env
+    image: node-agent:latest
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: node-agent
+    networks:
+      - node-agent-net
+    ports:
+      - 1887:1887
+    volumes:
+      - ${LOCAL_STORAGE:-/var/local/aerpawNodeAgent}:/var/local/aerpawNodeAgent
+      - ${DEV_BUS_USB:-/dev/bus/usb}:/dev/bus/usb
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+
+networks:
+  node-agent-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.101.1.0/24"

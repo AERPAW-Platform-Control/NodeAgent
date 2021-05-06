@@ -1,0 +1,8 @@
+# local programming files
+data/
+venv/
+.idea/
+
+# environment files
+.env
+

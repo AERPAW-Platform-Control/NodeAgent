@@ -1,4 +1,4 @@
 {
     "port" : "1887",
-    "containerStore" : "http://public.renci.org/~escott"
+    "containerStore" : "http://127.0.0.1/image_files"
 }

@@ -12,6 +12,11 @@ if [ ! -d /var/local/aerpawNodeAgent/"$CONTAINER"/data ]; then
     mkdir -p /var/local/aerpawNodeAgent/"$CONTAINER"/data
 fi
 
-docker run  --privileged -v /dev/bus/usb:/dev/bus/usb -v /var/local/aerpawNodeAgent/"$CONTAINER"/data:/data "$CONTAINER" 2> /var/local/aerpawNodeAgent/"$CONTAINER"/stderr > /var/local/aerpawNodeAgent/"$CONTAINER"/stdout < /dev/tty
+docker run --privileged --rm \
+  --name "$CONTAINER" \
+  -v /dev/bus/usb:/dev/bus/usb \
+  -v /var/local/aerpawNodeAgent/"$CONTAINER"/data:/data "$CONTAINER" \
+  2> /var/local/aerpawNodeAgent/"$CONTAINER"/stderr \
+  1> /var/local/aerpawNodeAgent/"$CONTAINER"/stdout
 
-
+exit 0;
